@@ -2,6 +2,7 @@
 var fs = require("fs"),
     url = require("url"),
     path = require("path"),
+    auth = require('http-auth'),
     express = require("express"),
     DEFAULT_PORT = 8001,
     optimist = require("optimist")
@@ -105,6 +106,17 @@ if (config.static) {
   app.use(staticUrl, express.static(staticPath));
 }
 
+var USER = process.env.USER,
+    PASSWORD = process.env.PASSWORD;
+
+var basic = auth.basic({
+        realm: "ACA only."
+    }, function (username, password, callback) { // Custom authentication method.
+        callback(username === USER && password === PASSWORD);
+    }
+);
+
+app.use(auth.connect(basic));
 app.use(operate);
 app.listen(argv.port || process.env.PORT || DEFAULT_PORT, function() {
   var addr = this.address(),
