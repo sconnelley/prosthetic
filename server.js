@@ -75,7 +75,8 @@ argc.forEach(function(filename) {
   try {
     var ops = JSON.parse(fs.readFileSync(filename));
   } catch (err) {
-    console.warn("unable to parse config in", filename, ":", err);
+    console.err("unable to parse config in", filename, ":", err);
+    return;
   }
   console.log("+ adding ops from:", filename);
   operate.add(ops);
@@ -109,5 +110,5 @@ app.listen(argv.port || process.env.PORT || DEFAULT_PORT, function() {
   var addr = this.address(),
       base = ["http://", addr.address, ":", addr.port].join("");
   operate.base(base);
-  console.log("+ listening at:", base);
+  console.log("++ listening at:", base);
 });
